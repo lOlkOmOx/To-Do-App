@@ -1,0 +1,13 @@
+# Ignorovat node_modules ve client a server adresářích
+client/node_modules/
+server/node_modules/
+client/package-lock.json
+server/package-lock.json
+
+# Ignorovat config.js v server adresáři
+server/config.js
+
+# Ostatní soubory a adresáře, které chcete ignorovat
+*.log
+.DS_Store
+Thumbs.db
