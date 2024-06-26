@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200;300;400;500;600;700;800&display=swap');
+
+
+.Logo h1 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: bold;
+    font-size: 10rem;
+    letter-spacing: -6px;
+
+}
+
+.Logo p {
+    font-family: 'Oxanium', sans-serif;
+    font-weight: 400;
+    font-size: 30px;
+}
+
+.Card {
+    display: flex;
+    justify-content: center; 
+    text-align: center; 
+    margin-top: 5rem
+}
+
+.Register {
+    font-family: 'Oxanium', sans-serif;
+}
+
+.GoogleButton {
+    margin-top: 10px;
+}
+
+#buttonDiv {
+    width: 100%; 
+    display: flex;
+    justify-content: center; /* center horizontally */
+    align-items: center; /* center vertically */
+}
+
+.Card .Changer {
+    margin-top: 15px
+}
+
+.Card h2 {
+    padding: 1.5rem 0; 
+    border-bottom: solid lightgray 1px;
+}
+
+@media screen and (max-width: 767px) {
+    .Logo h1 {
+        font-size: 4rem;
+        letter-spacing: -2px;
+    }
+
+    .Logo p {
+        font-size: 18px;
+    }
+
+    div .card {
+        width: "10rem";
+        margin: 4px;
+    }
+}

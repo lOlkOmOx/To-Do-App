@@ -6,6 +6,7 @@ server/package-lock.json
 
 # Ignorovat config.js v server adresáři
 server/config.js
+client/src/config.js
 
 # Ostatní soubory a adresáře, které chcete ignorovat
 *.log

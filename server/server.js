@@ -5,6 +5,8 @@ const mongoose = require('mongoose')
 const config = require('./config');
 const uri = config.mongoURI;
 app.use(express.json());
+const cors = require('cors');
+app.use(cors());
 
 //Routes
 const authRoute = require("./routes/auth")
