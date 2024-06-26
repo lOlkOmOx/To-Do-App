@@ -4,10 +4,23 @@ const port = 8000
 const mongoose = require('mongoose')
 const config = require('./config');
 const uri = config.mongoURI;
+app.use(express.json());
 
-mongoose.connect(uri);
+const authRoute = require("./routes/auth")
+app.use("/auth", authRoute)
+const userRoute = require("./routes/user")
+app.use("/user", userRoute)
 
-const db = mongoose.connection;
+
+
+
+
+
+
+//Database
+mongoose.connect(uri)
+
+const db = mongoose.connection
 
 db.on('error', console.error.bind(console, 'DB error:'))
 db.once('open', () => {
