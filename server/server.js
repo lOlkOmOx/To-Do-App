@@ -6,15 +6,13 @@ const config = require('./config');
 const uri = config.mongoURI;
 app.use(express.json());
 
+//Routes
 const authRoute = require("./routes/auth")
 app.use("/auth", authRoute)
 const userRoute = require("./routes/user")
 app.use("/user", userRoute)
-
-
-
-
-
+const taskRoute = require("./routes/task")
+app.use("/task", taskRoute)
 
 
 //Database
