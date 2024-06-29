@@ -160,13 +160,20 @@ router.get('/getToday', authenticate, async (req, res) => {
             recycling_bin: false
         })
 
+        const oldTasks = await Task.find({
+            owner_id: user,
+            date: { $lt: today },
+            solved: false,
+            recycling_bin: false
+        });
+
         if (tasks.length === 0) {
             return res.status(404).json({ message: 'No tasks found for today' })
         }
 
         if (sort === "prior_1-5") {
             tasks.sort((a, b) => a.priority - b.priority)
-            return res.status(200).json({ tasks })
+            return res.status(200).json({ tasks, oldTasks })
         }
 
         if (sort === "prior_5-1") {

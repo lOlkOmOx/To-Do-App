@@ -3,7 +3,7 @@ const config = require('../config');
 const SECRET_KEY = config.SECRET_KEY;
 
 const authenticate = (req, res, next) => {
-    const token = req.header('Authorization')?.split(' ')[1]
+    const token = req.header('Authorization').replace('Bearer ', '')
   
     if (!token) {
       return res.status(401).json({ message: 'Access denied' })

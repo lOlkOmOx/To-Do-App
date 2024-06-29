@@ -1,0 +1,45 @@
+.Today {
+    margin: 10px;
+    padding: 15px;
+    border-left: solid rgb(93, 173, 93) 5px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.24);
+    font-family: 'Oxanium', sans-serif;
+}
+
+.Today h1 {
+    font-family: 'Chakra Petch', sans-serif;
+    margin-bottom: 10px;
+}
+
+.Today .Stack {
+    border-bottom: solid gray 1px
+}
+
+.CardContainer {
+    margin-top: 10px;
+}
+
+.ProgressBar {
+    margin-top: 10px;
+}
+
+.dangerCard {
+    border: 2px solid darkred !important;
+}
+
+.dangerCard, .taskCard {
+    margin: 0px 3px 0 3px
+}
+
+.taskCard p {
+    border-top: solid lightgray 1px
+}
+
+.TaskButton {
+    width: 32%;
+}
+
+.TaskButtonMiddle {
+    margin: 0 3px 0 3px
+}

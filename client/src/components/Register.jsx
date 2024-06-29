@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import '../css/Register.css';
 import { Card, Button, FloatingLabel, Form } from 'react-bootstrap'; 
 import toast, { Toaster } from 'react-hot-toast';
@@ -34,6 +34,9 @@ function Register() {
                 },
                 body: JSON.stringify(dToIn),
             });
+
+            const data = await response.json();
+            
             if (response.status === 201) {
                 toast.success("Successfully registered");
                 setView("login");
@@ -41,7 +44,7 @@ function Register() {
                 toast.error("Wrong credidentals");
             } else if (response.status === 200){
                 console.log(response);
-                localStorage.setItem('token', response.token);
+                localStorage.setItem('token', data.token);
                 toast.success("Successfully logged in");
                 window.location.href = '/home';
             }

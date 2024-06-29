@@ -44,18 +44,14 @@ router.post('/changeLanguage', authenticate, async (req, res) => {
 
 // Get user data
 router.get('/get', authenticate, async (req, res) => {
-    const email = req.query.email
+  const email = req.user.email;
 
-    if (!email) {
-        return res.status(400).json({ message: 'Email is required' });
-      }
+  const user = await User.findOne({email: email}).select('-password');
+  if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+  }
 
-    const user = await User.findOne({ email }).select('-password');
-    if (!user) {
-        return res.status(400).json({ message: 'User not found'})
-    }
-    
-    return res.status(200).json({ user: user })
+  return res.status(200).json({ user });
 
 })
 
