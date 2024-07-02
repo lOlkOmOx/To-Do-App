@@ -1,23 +1,46 @@
-import React, { useState } from "react"
+import React, {useState} from "react"
 import { Button, Modal } from "react-bootstrap"
+import Icon from '@mdi/react';
+import {mdiTrashCanOutline} from '@mdi/js';
+import { deleteTask } from "../api/task";
+import toast from 'react-hot-toast';
+import { useTranslation } from './Translation'
 
 function ConfirmationModal(props) {
+  const { t } = useTranslation()
+
+  const [show, setShow] = useState(false)
+  const handleClose = () => setShow(false)
+  const handleShow = () => setShow(true)
+
+  const handleDeleteTask = async (id) => {
+    try {
+        await deleteTask(id);
+    } catch (error) {
+        toast.error(t.server_error);
+    } finally {
+        props.onSuccess()
+        handleClose()
+        toast.success(t.task_deleted);
+    }
+};
+
     return(
         <>
-        <Modal show={props.show} onHide={props.onCancel}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirmation</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Do you want really to delete this task?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={props.onCancel}>
-            Cancel
+          <Button variant="danger" className="TaskButton" onClick={handleShow}>
+            <Icon path={mdiTrashCanOutline} size={1} />
           </Button>
-          <Button variant="danger" onClick={props.onSuccess}>
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
+
+          <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>{t.confirmation}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>{t.confirmation_text}</Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>{t.cancel}</Button>
+              <Button variant="danger" onClick={() => {handleDeleteTask(props.task._id)}}>{t.delete}</Button>
+            </Modal.Footer>
+          </Modal>
         </>
     )
 }

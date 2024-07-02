@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react"
 import '../css/CreateTask.css';
-import { Button, Stack, Modal, Form, FloatingLabel } from "react-bootstrap"
+import { Button, Modal, Form, FloatingLabel } from "react-bootstrap"
 import Icon from '@mdi/react';
-import { mdiPlusThick } from '@mdi/js';
-import toast, { Toaster } from 'react-hot-toast';
+import { mdiFileEditOutline } from '@mdi/js';
+import toast from 'react-hot-toast';
+import { editTask } from "../api/task";
+import { useTranslation } from './Translation'
 
 function EditingTask(props) {
+    const { t } = useTranslation()
+
+    const [show, setShow] = useState(false)
+    const handleClose = () => setShow(false)
+    const handleShow = () => setShow(true)
 
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
@@ -21,125 +28,90 @@ function EditingTask(props) {
             setDuration(props.task.duration || "");
             setPriority(props.task.priority || 1);
         }
-    }, [props.task, props.show]);
+    }, [props.task]);
 
     const handleEditTask = async () => {
-        const token = localStorage.getItem('token');
-    
-        if (!token) {
-            console.error('No token found');
-            return;
-        }
-    
         try {
-            const dToIn = {
-                _id: props.task._id,
-                name: name,
-                description: description,
-                date: date,
-                duration: duration,
-                priority: priority
-            }
-            const response = await fetch('http://localhost:8000/task/edit', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dToIn)
-            })
-    
-            if (!response.ok) {
-                const errorData = await response.json();
-                toast.error(errorData.message);
-                throw new Error('Network response was not ok');
-            }
-            toast.success("Task edited");
-            const data = await response.json();
-            props.onUpdate()
-            closeModal()
-            return data;
+            await editTask(props.task, name, description, date, duration, priority);
         } catch (error) {
-            console.error('Error fetching user info:', error);
+            toast.error(t.server_error)
+        } finally {
+            props.onUpdate()
+            handleClose()
+            toast.success(t.task_edited);
         }
-    };
-
-    const closeModal = () => {
-        setName("")
-        setDescription("")
-        setDate("")
-        setPriority(60)
-        setDuration(1)
-        props.onClose()
     }
 
-return(
-    <>
-    {props.task ? (<>
-        <Modal show={props.show} onHide={closeModal}>
+    return(
+        <>
+        {props.task ? (<>
+            <Button variant="secondary" className="TaskButton TaskButtonMiddle" onClick={handleShow}>
+                <Icon path={mdiFileEditOutline} size={1} />
+            </Button>
+            <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Edit task</Modal.Title>
+                    <Modal.Title>{t.edit_task}</Modal.Title>
                 </Modal.Header> 
                 <Modal.Body>
-                <Form>
-                    <FloatingLabel label="Name" className="formField">
-                        <Form.Control
-                            type="text"
-                            placeholder="Name"
-                            value= {name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
-                    </FloatingLabel>
-                    <FloatingLabel label="Description" className="formField">
-                        <Form.Control
-                            type="text"
-                            placeholder="Description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                        />
-                    </FloatingLabel>
-                    <FloatingLabel label="Date" className="formField">
-                        <Form.Control
-                            type="date"
-                            placeholder="Date"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                        />
-                    </FloatingLabel>
-                    <FloatingLabel label="Duration (minutes)" className="formField">
-                        <Form.Control
-                            type="number"
-                            placeholder="Duration"
-                            value={duration}
-                            onChange={(e) => setDuration(e.target.value)}
-                        />
-                    </FloatingLabel>
-                    <div className="radio">
-                    <Form.Label>Priority 1=high</Form.Label>
-                        <br/>
-                            {[1, 2, 3, 4, 5].map((value) => (
-                                <Form.Check
-                                  key={value}
-                                  type="radio"
-                                  name="priority"
-                                  value={value}
-                                  label={value}
-                                  checked={priority === value}
-                                  onChange={(e) => setPriority(parseInt(e.target.value))}
-                                  inline
-                                />
-                              ))}
-                    </div>
-                    
-                </Form>
+                    <Form>
+                        <FloatingLabel label={t.task_name} className="formField">
+                            <Form.Control
+                                type="text"
+                                placeholder={t.task_name}
+                                value= {name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
+                        </FloatingLabel>
+                        <FloatingLabel label={t.description} className="formField">
+                            <Form.Control
+                                type="text"
+                                placeholder={t.description}
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                            />
+                        </FloatingLabel>
+                        <FloatingLabel label={t.date} className="formField">
+                            <Form.Control
+                                type="date"
+                                placeholder={t.date}
+                                value={date}
+                                onChange={(e) => setDate(e.target.value)}
+                            />
+                        </FloatingLabel>
+                        <FloatingLabel label={t.duration_minutes} className="formField">
+                            <Form.Control
+                                type="number"
+                                placeholder={t.duration_minutes}
+                                value={duration}
+                                onChange={(e) => setDuration(e.target.value)}
+                            />
+                        </FloatingLabel>
+                        <div className="radio">
+                        <Form.Label>{t.priority} {t.five_high}</Form.Label>
+                            <br/>
+                                {[1, 2, 3, 4, 5].map((value) => (
+                                    <Form.Check
+                                    key={value}
+                                    type="radio"
+                                    name="priority"
+                                    value={value}
+                                    label={value}
+                                    checked={priority === value}
+                                    onChange={(e) => setPriority(parseInt(e.target.value))}
+                                    inline
+                                    />
+                                ))}
+                        </div>
+                        
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="success" type="submit" onClick={handleEditTask}>Save changes</Button>
+                    <Button variant="success" type="submit" onClick={handleEditTask}>{t.save_changes}</Button>
                 </Modal.Footer>
             </Modal>
-        </>):(<></>)}
-    </>
-)
+            </>):(<></>)}
+        </>
+    )
 }
 
 export default EditingTask

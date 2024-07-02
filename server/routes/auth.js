@@ -43,7 +43,7 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   //Check if user exists
-  const user = await User.findOne({ email })
+  const user = await User.findOne({ email }) 
   if (!user) {
     return res.status(400).json({ message: 'Wrong email or password' })
   }
@@ -55,7 +55,7 @@ router.post('/login', async (req, res) => {
   }
 
   //generate token
-  const token = jwt.sign({ email: user.email }, SECRET_KEY, { expiresIn: '1h' })
+  const token = jwt.sign({ email: user.email }, SECRET_KEY, { expiresIn: '5h' })
   res.status(200).json({ token })
 });
 

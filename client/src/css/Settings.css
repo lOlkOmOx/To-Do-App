@@ -1,0 +1,12 @@
+.button {
+    margin: 0 5px;
+    border: solid black 1px
+}
+
+.saveButton {
+    margin: 5px 0;
+}
+
+.form {
+    margin: 5px 0;
+}

@@ -1,0 +1,11 @@
+thead, tbody {
+    text-align: center;
+}
+
+.Actions {
+    text-align: end;
+}
+
+.middleButton {
+    margin: 0 5px
+}

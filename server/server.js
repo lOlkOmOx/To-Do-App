@@ -1,4 +1,5 @@
-const express = require("express")
+
+const express = require("express") 
 const app = express()
 const port = 8000
 const mongoose = require('mongoose')
@@ -8,7 +9,9 @@ app.use(express.json());
 const cors = require('cors');
 app.use(cors());
 
-//Routes
+const dailyTaskEmail = require('./scripts/dailyTaskEmail');
+
+
 const authRoute = require("./routes/auth")
 app.use("/auth", authRoute)
 const userRoute = require("./routes/user")
@@ -16,6 +19,9 @@ app.use("/user", userRoute)
 const taskRoute = require("./routes/task")
 app.use("/task", taskRoute)
 
+const currentTime = new Date();
+console.log(currentTime);
+ 
 
 //Database
 mongoose.connect(uri)

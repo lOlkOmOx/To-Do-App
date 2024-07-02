@@ -20,7 +20,7 @@ router.post('/create', authenticate, async (req, res) => {
         const newTask = new Task({
           owner_id,
           name,
-          description,
+          description: description || " ",
           date,
           duration,
           priority,
@@ -167,140 +167,124 @@ router.get('/getToday', authenticate, async (req, res) => {
             recycling_bin: false
         });
 
-        if (tasks.length === 0) {
-            return res.status(404).json({ message: 'No tasks found for today' })
+        const solvedTasks = await Task.find({
+            owner_id: user,
+            date: { $gte: `${today}T00:00:00.000Z`, $lt: `${today}T23:59:59.999Z` },
+            solved: true,
+            recycling_bin: false
+        })
+
+        const solvedPercentage = tasks.length > 0 ? Math.round((solvedTasks.length / (tasks.length + solvedTasks.length)) * 100) : 100
+        const taskCount = tasks.length
+        const solvedCount = solvedTasks.length
+
+
+        if (sort === "prior_5-1") {
+            tasks.sort((a, b) => b.priority - a.priority)
+            return res.status(200).json({ tasks, oldTasks, solvedTasks, solvedPercentage, taskCount, solvedCount })
         }
 
         if (sort === "prior_1-5") {
             tasks.sort((a, b) => a.priority - b.priority)
-            return res.status(200).json({ tasks, oldTasks })
+            return res.status(200).json({ tasks, oldTasks, solvedTasks, solvedPercentage, taskCount, solvedCount })
         }
 
-        if (sort === "prior_5-1") {
-            tasks.sort((a, b) => b.priority - a.priority)
-            return res.status(200).json({ tasks })
+        if (sort === "lowestTime") { 
+            tasks.sort((a, b) => a.duration - b.duration)
+            return res.status(200).json({ tasks, oldTasks, solvedTasks, solvedPercentage, taskCount, solvedCount })
         }
 
-        if (sort === "first") { 
-            tasks.sort((a, b) => new Date(a.date) - new Date(b.date))
-            return res.status(200).json({ tasks })
-        }
-
-        if (sort === "last") { 
-            tasks.sort((a, b) => new Date(b.date) - new Date(a.date))
-            return res.status(200).json({ tasks })
+        if (sort === "mostTime") { 
+            tasks.sort((a, b) => b.duration - a.duration)
+            return res.status(200).json({ tasks, oldTasks, solvedTasks, solvedPercentage, taskCount, solvedCount })
         }
         
 })
 
 // Get this week
 router.get('/getThisWeek', authenticate, async (req, res) => {
-    const user = req.query.user
-    const sort = req.query.sort
+    const user = req.query.user;
 
     try {
-        const today = new Date()
-        const tomorrow = new Date(today)
-        tomorrow.setDate(today.getDate() + 1)
+        const today = new Date();
+        
+        // Pokud je dneska neděle, nevracíme žádné úkoly
+        if (today.getDay() === 0) {
+            return res.status(404).json({ message: 'Dnes je neděle, nejsou k dispozici žádné úkoly pro tento týden' });
+        }
 
-        const startOfWeek = new Date(today)
-        startOfWeek.setDate(today.getDate() - today.getDay() + 1)
+        // Nastavíme `startOfWeek` na zítřejší den 00:00
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() + 1);
+        startOfWeek.setHours(0, 0, 0, 0);
 
-        const endOfWeek = new Date(today)
-        endOfWeek.setDate(today.getDate() + (7 - today.getDay()))
+        // Nastavíme `endOfWeek` na neděli 23:59:59.999
+        const endOfWeek = new Date(today);
+        endOfWeek.setDate(today.getDate() + (7 - today.getDay()));
+        endOfWeek.setHours(23, 59, 59, 999);
 
         const tasks = await Task.find({
             owner_id: user,
             date: {
-                $gte: tomorrow.toISOString(),
-                $lt: endOfWeek.toISOString()
+                $gte: startOfWeek,
+                $lte: endOfWeek
             },
             solved: false,
             recycling_bin: false
         });
 
         if (tasks.length === 0) {
-            return res.status(404).json({ message: 'No active tasks found for this week' });
+            return res.status(404).json({ message: 'Nebyly nalezeny žádné aktivní úkoly pro tento týden' });
         }
 
-        if (sort === "prior_1-5") {
-            tasks.sort((a, b) => a.priority - b.priority)
-            return res.status(200).json({ tasks })
-        }
+        return res.status(200).json({ tasks });
 
-        if (sort === "prior_5-1") {
-            tasks.sort((a, b) => b.priority - a.priority)
-            return res.status(200).json({ tasks })
-        }
-
-        if (sort === "first") { 
-            tasks.sort((a, b) => new Date(a.date) - new Date(b.date))
-            return res.status(200).json({ tasks })
-        }
-
-        if (sort === "last") { 
-            tasks.sort((a, b) => new Date(b.date) - new Date(a.date))
-            return res.status(200).json({ tasks })
-        }
-        
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ message: 'Server error' });
+        return res.status(500).json({ message: 'Chyba serveru' });
     }
-})
+});
 
-// Get later
+
 router.get('/getLater', authenticate, async (req, res) => {
-    const user = req.query.user
-    const sort = req.query.sort
+    const user = req.query.user;
 
     try {
-        const today = new Date()
-        
-        const startOfWeek = new Date(today)
-        startOfWeek.setDate(today.getDate() - today.getDay() + 1)
+        const today = new Date();
+        const currentDayOfWeek = today.getDay(); // Den v týdnu (0 = neděle, 1 = pondělí, ..., 6 = sobota)
 
-        const endOfWeek = new Date(today)
-        endOfWeek.setDate(today.getDate() + (7 - today.getDay()))
+
+        // Pokud je dneska neděle (den 0), přidáme 1 den pro začátek příštího týdne
+        const daysUntilNextMonday = currentDayOfWeek === 0 ? 1 : 8 - currentDayOfWeek;
+
+        // Nastavení začátku příštího týdne (pondělí)
+        const startOfNextWeek = new Date(today);
+        startOfNextWeek.setDate(today.getDate() + daysUntilNextMonday);
+        startOfNextWeek.setHours(0, 0, 0, 0);
+
 
         const tasks = await Task.find({
             owner_id: user,
             date: {
-                $gt: endOfWeek.toISOString() 
+                $gte: startOfNextWeek.toISOString() // Hledat úkoly od začátku příštího týdne (pondělí)
             },
             solved: false,
             recycling_bin: false
-        })
+        }).sort({ date: 1 });
 
         if (tasks.length === 0) {
-            return res.status(404).json({ message: 'No tasks found' })
+            return res.status(404).json({ message: 'Nebyly nalezeny žádné úkoly' });
         }
 
-        if (sort === "prior_1-5") {
-            tasks.sort((a, b) => a.priority - b.priority)
-            return res.status(200).json({ tasks })
-        }
-
-        if (sort === "prior_5-1") {
-            tasks.sort((a, b) => b.priority - a.priority)
-            return res.status(200).json({ tasks })
-        }
-
-        if (sort === "first") { 
-            tasks.sort((a, b) => new Date(a.date) - new Date(b.date))
-            return res.status(200).json({ tasks })
-        }
-
-        if (sort === "last") { 
-            tasks.sort((a, b) => new Date(b.date) - new Date(a.date))
-            return res.status(200).json({ tasks })
-        }
+        return res.status(200).json({ tasks });
 
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ message: 'Server error' });
+        return res.status(500).json({ message: 'Chyba serveru' });
     }
-})
+});
+
+
 
 // Get archive
 router.get('/getArchive', authenticate, async (req, res) => {

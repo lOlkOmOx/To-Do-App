@@ -1,49 +1,51 @@
-.Today {
+.Container {
     margin: 10px;
-    padding: 15px;
-    border-left: solid rgb(93, 173, 93) 5px;
+    border-left: solid rgb(181, 23, 102) 5px;
     border-radius: 5px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.24);
     font-family: 'Oxanium', sans-serif;
+    
 }
 
-.Today h1 {
+.Container h1 {
     font-family: 'Chakra Petch', sans-serif;
     margin-bottom: 10px;
-}
-
-.Today .Stack {
-    border-bottom: solid gray 1px
 }
 
 .CardContainer {
     margin-top: 10px;
     flex-wrap: wrap;
-    gap: 1rem;
     margin-top: 10px;
     align-items: stretch;
 }
 
-.ProgressBar {
-    margin-top: 10px;
+.accordion-button:not(.collapsed), .accordion-button:focus {
+    color: black;
+    background-color: white !important;
+    box-shadow: none !important
 }
 
-.dangerCard {
-    border: 2px solid darkred !important;
-}
-
-.dangerCard, .taskCard {
-    margin: 0px 3px 0 3px
-}
-
-.taskCard p {
+.TaskCard p {
     border-top: solid lightgray 1px
 }
 
 .TaskButton {
-    width: 32%;
+    width: 100%;
 }
 
 .TaskButtonMiddle {
     margin: 0 3px 0 3px
+}
+
+.accordion-button {
+    padding: 10px 15px 0 15px !important;
+}
+
+.OtherCards {
+    border-top: solid black 1px;
+    padding-top: 10px;
+}
+
+.accordion-body {
+    padding: 0 15px 10px 15px;
 }
