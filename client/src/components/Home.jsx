@@ -61,8 +61,8 @@ function Home(){
                 </div>
                     <CreateTask onUpdate={getUserData} user={user} addTask={addTask}/>
                     <Today user={user} taskCount={tasks}/>
-                    <Container user={user} type={"ThisWeek"} taskCount={tasks}/>
-                    <Container user={user} type={"Later"} taskCount={tasks}/>
+                    <Container user={user} type={"ThisWeek"} taskCount={tasks} addTask={addTask}/>
+                    <Container user={user} type={"Later"} taskCount={tasks} addTask={addTask}/>
             </>):(null)}
         </>
     )

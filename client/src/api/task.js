@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 
-const BASE_URL = 'http://localhost:8000';
+const BASE_URL = '';
 
 export const handleSolvingTask = async (id) => {
 
@@ -115,7 +115,7 @@ export const getToday = async (user, sort) => {
         }
     
         try {
-            const response = await fetch(`http://localhost:8000/task/getToday?user=${user._id}&sort=${sort}`, {
+            const response = await fetch(`${BASE_URL}/task/getToday?user=${user._id}&sort=${sort}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -143,7 +143,7 @@ export const getTaskList = async (user, type) => {
         }
     
         try {
-            const response = await fetch(`http://localhost:8000/task/get${type}?user=${user._id}`, {
+            const response = await fetch(`${BASE_URL}/task/get${type}?user=${user._id}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -179,7 +179,7 @@ export const createTask = async (user, name, description, date, duration, priori
                 duration: duration,
                 priority: priority
             }
-            const response = await fetch('http://localhost:8000/task/create', {
+            const response = await fetch(`${BASE_URL}/task/create`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -218,7 +218,7 @@ export const editTask = async (task, name, description, date, duration, priority
                 duration: duration,
                 priority: priority
             }
-            const response = await fetch('http://localhost:8000/task/edit', {
+            const response = await fetch(`${BASE_URL}/task/edit`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -252,7 +252,7 @@ export const rescheduleTask = async (id) => {
                 _id: id,
                 date: new Date()
             }
-            const response = await fetch('http://localhost:8000/task/edit', {
+            const response = await fetch(`${BASE_URL}/task/edit`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

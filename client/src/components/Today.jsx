@@ -74,10 +74,9 @@ function Today(props) {
                         </Dropdown>
                     </Stack>
                 </div>
-            </Stack>
-
+            </Stack>      
             {solvedCount !== 0 ? (
-                <ProgressBar animated variant="success" now={progressBar} label={progressBar + t.completed_today + " ("+ solvedCount + t.from + (solvedCount + taskCount) + ")"} className="ProgressBar"/>
+                <ProgressBar variant="success" now={progressBar} label={progressBar + t.completed_today + " ("+ solvedCount + t.from + (solvedCount + taskCount) + ")"} className="ProgressBar"/>
             ):(null)}
 
             {(oldTasks.length === 0 && tasks.length === 0 && solvedCount === 0) ? (<>
@@ -88,8 +87,7 @@ function Today(props) {
             {(tasks.length === 0 && solvedCount !== 0) ? (<>
                 <Icon path={mdiCheckCircleOutline} size={4} style={{marginTop: "20px"}} color={"darkgreen"}/>
                 <p>{t.all_tasks_done}</p>
-            </>):(null) }
-            
+            </>):(null) }  
             <Stack direction="horizontal" gap={2} className="flex-wrap CardContainer">
 
                 {oldTasks.length !== 0 ? (<>

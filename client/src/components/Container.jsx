@@ -36,7 +36,7 @@ function Container(props) {
                     </Stack> 
                 </Accordion.Header>
                 <Accordion.Body>
-                     {tasks.length === 0 ? (<>
+                    {tasks.length === 0 ? (<>
                             <Icon path={mdiInformationOutline} size={4} style={{marginTop: "20px"}}/>
                             <p>{t.no_active_tasks}</p>
                         </>):(<>

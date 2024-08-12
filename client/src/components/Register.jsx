@@ -14,8 +14,7 @@ function Register() {
         setView(view === "login" ? "register" : "login");
     };
 
-    const handleFormSubmit = async (e) => {
-        e.preventDefault();
+    const authCall = async (e) => {
         const endpoint = view === "login" ? "login" : "register";
         if (view === "register" && password !== confirmPassword) {
             toast.error("Passwords do not match");
@@ -54,6 +53,20 @@ function Register() {
         }
     };
 
+    const submitForm = (e) => {
+        e.preventDefault()
+        authCall()
+
+    }
+
+    const demoLogin = () => {
+        setEmail("demo@todo.com")
+        setPassword("password")
+        setTimeout(() => {
+            authCall()
+        }, 100)
+    }
+
 
     return (
         <div className="Register">
@@ -66,7 +79,7 @@ function Register() {
                 {view === "register" ? (
                     <Card style={{ width: "30rem" }}>
                         <Card.Title as="h2">Sign Up</Card.Title>
-                            <Form onSubmit={handleFormSubmit} style={{ padding: "30px" }}>
+                            <Form onSubmit={submitForm} style={{ padding: "30px" }}>
                                 <FloatingLabel label="Email">
                                     <Form.Control
                                         type="email"
@@ -105,7 +118,7 @@ function Register() {
                     <Card style={{ width: "30rem" }}>
                         <Card.Title as="h2">Login</Card.Title>
                         <Card.Text>
-                                <Form onSubmit={handleFormSubmit} style={{ padding: "30px" }}>
+                                <Form onSubmit={submitForm} style={{ padding: "30px" }}>
                                     <FloatingLabel label="Email">
                                         <Form.Control
                                             type="email"
@@ -127,9 +140,9 @@ function Register() {
                                         {view === "login" ? "Log In" : "Sign Up"}
                                     </Button>
                                 </Form>
-                            
                         </Card.Text>
                         <p className="Changer">Need an account? <a href="#!" onClick={changeView}>Sign up</a></p>
+                        <Button variant="success" onClick={demoLogin}>View demo</Button>
                     </Card>
                 )}
             </div>
